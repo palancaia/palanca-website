@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palanca — IA para tu negocio</title>
+  <meta name="description" content="Automatizá tu agenda y atención al cliente con inteligencia artificial. Tu negocio opera solo, sin que toques el celular." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #181828;
+      --bg-card:  #1e1e30;
+      --bg-card2: #252540;
+      --green:    #2563EB;
+      --green-dim:#2563EB18;
+      --blue:     #2563EB;
+      --blue-dim: #2563EB18;
+      --white:    #FFFFFF;
+      --muted:    #888888;
+      --border:   #2a2a42;
+      --radius:   12px;
+      --radius-lg:20px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── Layout helpers ────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 96px 0; }
+    .section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 16px;
+    }
+    h2.section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    p.section-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 560px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    /* ─── Buttons ───────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .18s ease;
+      letter-spacing: -0.2px;
+    }
+    .btn-primary {
+      background: var(--white);
+      color: #0A0A0A;
+    }
+    .btn-primary:hover { background: #e8e8e8; transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid #333;
+    }
+    .btn-secondary:hover { border-color: var(--white); }
+    .btn-arrow::after { content: ' →'; }
+
+    /* ─── Especialización ──────────────────────────────── */
+    #especializacion {
+      background: var(--bg-card);
+      text-align: center;
+      padding: 96px 0;
+    }
+    .especializacion-inner { max-width: 900px; margin: 0 auto; }
+    .especializacion-inner .section-label { margin-bottom: 32px; }
+    .especializacion-statement {
+      font-size: clamp(28px, 4.5vw, 54px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      color: var(--white);
+      margin-bottom: 0;
+    }
+    .especializacion-statement .accent { color: var(--green); }
+    .especializacion-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      margin-top: 20px;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* ─── News section ──────────────────────────────────── */
+    #noticias { background: var(--bg); }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .news-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .2s, border-color .2s;
+    }
+    .news-card:hover { transform: translateY(-4px); border-color: var(--green); }
+    .news-card-stat {
+      font-size: clamp(17px, 2vw, 20px);
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--white);
+    }
+    .news-card-source {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+    .news-card-source svg { flex-shrink: 0; }
+    @media (max-width: 768px) { .news-grid { grid-template-columns: 1fr; } }
+
+    /* ─── Nav ───────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(18,18,30,.92);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--green); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--muted);
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+
+    /* ─── Hero ──────────────────────────────────────────── */
+    #hero {
+      padding-top: 160px;
+      padding-bottom: 96px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(37,99,235,.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #hero .tag { margin-bottom: 24px; }
+    #hero h1 {
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+    #hero h1 .accent { color: var(--green); }
+    #hero p {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+    .hero-metrics {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .metric { text-align: center; }
+    .metric-value {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+    }
+    .metric-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .metric-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ─── Logos / Social proof ──────────────────────────── */
+    #social-proof { padding: 48px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .social-proof-label {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .logo-badge {
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ─── Problem ───────────────────────────────────────── */
+    #problema { background: var(--bg-card); }
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-top: 64px;
+    }
+    .problem-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+    .problem-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .problem-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .problem-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .problem-item p { font-size: 14px; color: var(--muted); }
+    .phone-mock {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .phone-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .phone-avatar {
+      width: 40px; height: 40px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--bg);
+      font-size: 16px;
+    }
+    .phone-name { font-size: 15px; font-weight: 600; }
+    .phone-status { font-size: 12px; color: var(--green); }
+    .chat-messages { display: flex; flex-direction: column; gap: 10px; }
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .msg-in {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      border-radius: 2px 12px 12px 12px;
+    }
+    .msg-out {
+      background: var(--green);
+      color: var(--bg);
+      align-self: flex-end;
+      font-weight: 500;
+      border-radius: 12px 12px 2px 12px;
+    }
+    .msg-time { font-size: 10px; opacity: .5; margin-top: 4px; text-align: right; }
+    .msg-typing {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      align-self: flex-start;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: bounce .8s infinite; }
+    .dot:nth-child(2) { animation-delay: .15s; }
+    .dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* ─── How it works ──────────────────────────────────── */
+    #como-funciona { background: var(--bg-card); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      left: calc(12.5% + 16px);
+      right: calc(12.5% + 16px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      opacity: .4;
+    }
+    .step {
+      text-align: center;
+      padding: 32px 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+    .step-number {
+      width: 56px; height: 56px;
+      background: var(--green);
+      color: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0 auto 20px;
+    }
+    .step h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .step p { font-size: 14px; color: var(--muted); }
+
+    /* ─── Features ──────────────────────────────────────── */
+    #modulos { background: var(--bg); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: border-color .2s, transform .2s;
+    }
+    .feature-card:hover { border-color: #444; transform: translateY(-2px); }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.3px; }
+    .service-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .service-items li { font-size: 14px; color: var(--muted); padding-left: 16px; position: relative; }
+    .service-items li::before { content: '—'; position: absolute; left: 0; color: #444; }
+
+    /* ─── FAQ ───────────────────────────────────────────── */
+    #faq { background: var(--bg-card); }
+    .faq-list { margin-top: 48px; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    .faq-toggle { color: var(--muted); font-size: 20px; transition: transform .2s; flex-shrink: 0; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); color: var(--green); }
+    .faq-answer {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 22px; }
+
+    /* ─── CTA Final ─────────────────────────────────────── */
+    #cta-final {
+      background: var(--bg);
+      text-align: center;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, #111629, #0d1528);
+      border: 1px solid var(--green);
+      border-radius: 24px;
+      padding: 72px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(37,99,235,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; margin-bottom: 16px; letter-spacing: -1px; }
+    .cta-box p { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
+    .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .cta-note { font-size: 13px; color: var(--muted); margin-top: 20px; }
+
+    /* ─── Footer ────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy { font-size: 14px; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 14px; color: var(--muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--white); }
+
+    /* ─── Responsive ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      section { padding: 64px 0; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero-metrics { gap: 24px; }
+      .metric-divider { display: none; }
+      .cta-box { padding: 48px 24px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <div class="container nav-inner">
+    <div class="logo">palanca<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#especializacion">Lo que hacemos</a></li>
+      <li><a href="#noticias">Industria</a></li>
+      <li><a href="#modulos">Soluciones</a></li>
+      <li><a href="#como-funciona">Proceso</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow">Hablemos</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container" style="position:relative; z-index:1;">
+    <div class="hero-glow"></div>
+    <h1>
+      El socio de IA definitivo<br>
+      <span class="accent">para consultorios y empresas que crecen.</span>
+    </h1>
+    <p>
+      Un sistema de IA que responde WhatsApp, agenda turnos y manda
+      recordatorios automáticos — 24/7, sin que vos estés presente.
+    </p>
+    <div class="hero-actions">
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow">
+        Agendar llamada gratis
+      </a>
+      <a href="#como-funciona" class="btn btn-secondary">Cómo funciona</a>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric">
+        <div class="metric-value">-73%</div>
+        <div class="metric-label">Mensajes manuales<br>de WhatsApp por día</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <div class="metric-value">+40%</div>
+        <div class="metric-label">Reducción de<br>no-shows</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <div class="metric-value">100%</div>
+        <div class="metric-label">Onboarding<br>guiado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOCIAL PROOF ─────────────────────────────────────── -->
+<section id="social-proof">
+  <div class="container">
+    <p class="social-proof-label">Funciona para tu tipo de consultorio</p>
+    <div class="logos">
+      <span class="logo-badge">🦷 Odontología</span>
+      <span class="logo-badge">💆 Estética y belleza</span>
+      <span class="logo-badge">🎾 Padel &amp; deportes</span>
+      <span class="logo-badge">🏥 Medicina general</span>
+      <span class="logo-badge">💊 Especialidades</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 1 · LO QUE HACEMOS ───────────────────────────────── -->
+<section id="especializacion">
+  <div class="container">
+    <div class="especializacion-inner">
+      <span class="section-label">Lo que hacemos</span>
+      <p class="especializacion-statement">
+        Sistemas de IA de punta a punta que<br>
+        <span class="accent">generan leads, cierran ventas</span><br>
+        y escalan operaciones.
+      </p>
+      <p class="especializacion-sub">— construidos y gestionados por un equipo que lo implementó en decenas de negocios.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 2 · NOTICIAS ──────────────────────────────────────── -->
+<section id="noticias">
+  <div class="container">
+    <span class="section-label">2 · Lo que dice la industria</span>
+    <h2 class="section-title">La IA no es el futuro.<br>Ya está pasando.</h2>
+    <div class="news-grid">
+      <a class="news-card" href="https://massimple.digital/nueve-estadisticas-reveladoras-sobre-la-importancia-del-tiempo-de-respuesta-a-tus-leads/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"Responder dentro de los 5 minutos desde la primera consulta hace 21 veces más probable cerrar ese lead que si tardás 30 minutos."</p>
+        <span class="news-card-source">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          MasSimple Digital · Estadísticas de Tiempo de Respuesta
+        </span>
+      </a>
+      <a class="news-card" href="https://nexoestelar.com/automatizacion-procesos-pymes-argentina-2025/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"Las PyMEs argentinas que automatizan WhatsApp reportan un ahorro del 50–70% en tiempo de atención y reducen costos operativos hasta un 30%."</p>
+        <span class="news-card-source">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Nexo Estelar · Automatización PyMEs Argentina 2025
+        </span>
+      </a>
+      <a class="news-card" href="https://www.lanacion.com.ar/economia/IA/el-81-de-las-empresas-argentinas-ya-adopta-ia-de-alguna-manera-en-su-negocio-nid03072025/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"El 81% de las empresas argentinas ya adopta IA de alguna manera — y el 72% reporta mejoras concretas en eficiencia y ahorro de tiempo."</p>
+        <span class="news-card-source">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          La Nación · Empresas Argentinas e IA
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3 · EL PROBLEMA ───────────────────────────────────── -->
+<section id="problema">
+  <div class="container">
+    <span class="section-label">3 · El problema</span>
+    <h2 class="section-title">Cada turno se pierde<br>entre mensajes de WhatsApp.</h2>
+    <div class="problem-grid">
+      <ul class="problem-list">
+        <li class="problem-item">
+          <div class="problem-icon">📱</div>
+          <div>
+            <h4>Respondés WhatsApp todo el día</h4>
+            <p>Disponibilidad, precio, obras sociales, cancelaciones — interrumpiendo cada cosa que hacés.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">❌</div>
+          <div>
+            <h4>Los no-shows te cuestan plata directa</h4>
+            <p>Un turno que no se confirma y no aparece es plata perdida. El recordatorio manual lo terminás olvidando.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">🌙</div>
+          <div>
+            <h4>Después de las 18hs, no respondés</h4>
+            <p>El paciente que escribe a las 9pm se va a la competencia que responde más rápido.</p>
+          </div>
+        </li>
+        <li class="problem-item">
+          <div class="problem-icon">📋</div>
+          <div>
+            <h4>La agenda vive en tu cabeza (o en papel)</h4>
+            <p>Sin sistema, dependés de acordarte vos — y cuando te olvidás, se genera el caos.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="phone-mock">
+        <div class="phone-header">
+          <div class="phone-avatar">P</div>
+          <div>
+            <div class="phone-name">Paciente nuevo</div>
+            <div class="phone-status">● en línea</div>
+          </div>
+        </div>
+        <div class="chat-messages">
+          <div class="msg msg-in">Hola! tienen turno para el martes?</div>
+          <div class="msg msg-in">o miercoles a la mañana</div>
+          <div class="msg msg-in">cuanto cobran la consulta?</div>
+          <div class="msg msg-in">hacen galeno?</div>
+          <div class="msg msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 4 · MÓDULOS ───────────────────────────────────────── -->
+<section id="modulos">
+  <div class="container">
+    <span class="section-label">4 · Nuestras soluciones</span>
+    <h2 class="section-title">En qué nos especializamos.</h2>
+    <p class="section-sub">Sistemas de IA de punta a punta que generan leads, cierran ventas y escalan operaciones — construidos y gestionados por un equipo que lo implementó en decenas de negocios.</p>
+    <div class="features-grid" style="margin-top:48px;">
+      <div class="feature-card">
+        <h3>Atención al cliente IA</h3>
+        <ul class="service-items"><li>WhatsApp 24/7</li><li>Respuestas instantáneas</li><li>Derivación inteligente</li></ul>
+      </div>
+      <div class="feature-card">
+        <h3>Agenda automática</h3>
+        <ul class="service-items"><li>Reserva por WhatsApp</li><li>Sincronización con calendario</li><li>Sin intermediarios</li></ul>
+      </div>
+      <div class="feature-card">
+        <h3>Recordatorios y confirmaciones</h3>
+        <ul class="service-items"><li>WhatsApp automático 48hs antes</li><li>Confirmación con 1 click</li><li>Reducción de no-shows</li></ul>
+      </div>
+      <div class="feature-card">
+        <h3>Reactivación de clientes</h3>
+        <ul class="service-items"><li>Secuencias automáticas</li><li>Segmentación por inactividad</li><li>Recuperación de leads fríos</li></ul>
+      </div>
+      <div class="feature-card">
+        <h3>Generación de leads</h3>
+        <ul class="service-items"><li>Captura por Instagram / Meta</li><li>Speed-to-lead automático</li><li>CRM en Google Sheets</li></ul>
+      </div>
+      <div class="feature-card">
+        <h3>Reportes y visibilidad</h3>
+        <ul class="service-items"><li>Dashboard en tiempo real</li><li>Notificaciones por Gmail</li><li>Métricas de conversión</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 5 · CÓMO FUNCIONA ────────────────────────────────── -->
+<section id="como-funciona">
+  <div class="container">
+    <span class="section-label">5 · Proceso</span>
+    <h2 class="section-title">De la primera llamada<br>al lanzamiento.</h2>
+    <p class="section-sub">Sin código, sin sorpresas. Sabés exactamente qué vas a recibir antes de arrancar.</p>
+    <div class="steps" style="grid-template-columns: repeat(4,1fr);">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Auditoría del embudo</h3>
+        <p>Sesión gratuita de 30 min donde auditamos tu flujo, identificamos cuellos de botella y mapeamos dónde la IA mueve el resultado.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Propuesta concreta</h3>
+        <p>Entregamos alcance, cronograma y precio fijo. Sin sorpresas, sin cobro por hora. Sabés exactamente qué vas a recibir.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Construcción y lanzamiento</h3>
+        <p>Construimos, probamos y desplegamos tu sistema. Recibís actualizaciones semanales y un producto funcionando — no un deck lleno de promesas.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Gestión continua</h3>
+        <p>Retainer opcional para monitoreo, optimización e iteración. La mayoría de los clientes ve retornos crecientes con el tiempo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ──────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="container">
+    <span class="section-label">Preguntas frecuentes</span>
+    <h2 class="section-title" style="max-width:560px;">Lo que nos preguntan antes de arrancar.</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question">¿Tengo que cambiar mi número de WhatsApp? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">No. Usamos tu número actual a través de WhatsApp Business. El sistema se conecta a tu cuenta existente, no necesitás un número nuevo.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué pasa si el paciente hace una pregunta que el sistema no sabe responder? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">El sistema deriva la conversación a vos con una notificación. Siempre podés tomar el control cuando necesitás. El bot maneja el 80-90% de las consultas rutinarias solo.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Funciona con obras sociales y prepagas? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Sí. Configuramos el sistema con la información de las obras sociales que aceptás. El bot puede responder qué obras sociales cubrís y qué cobertura aplica a cada prestación.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuánto tarda la implementación? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Depende de la complejidad del sistema. En la llamada de discovery definimos juntos los tiempos. La primera etapa es construir el sistema, la segunda son pruebas y ajustes con vos antes de salir en producción.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué pasa si quiero cancelar? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">El retainer es mensual, sin permanencia mínima. Si en cualquier momento querés cancelar, avisás y listo. El sistema que construimos queda tuyo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ────────────────────────────────────────── -->
+<section id="cta-final">
+  <div class="container">
+    <div class="cta-box">
+      <div class="cta-glow"></div>
+      <h2>¿Listo para escalar con IA?</h2>
+      <p>Agendá una llamada gratuita de 30 minutos. Auditamos tu embudo,<br>encontramos los cuellos de botella y te mostramos exactamente dónde la IA mueve el resultado.</p>
+      <div class="cta-actions">
+        <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow" style="font-size:16px; padding: 16px 36px;">
+          Agendar llamada de crecimiento gratis
+        </a>
+      </div>
+      <p class="cta-note">Sin compromiso · Sin contrato · Resultados en semanas</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────── -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <div class="logo" style="margin-bottom: 4px;">palanca<span>.</span></div>
+      <div class="footer-copy">© 2026 Palanca · Buenos Aires, Argentina</div>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:consultas.palanca@gmail.com">consultas.palanca@gmail.com</a>
+      <a href="https://tally.so/r/9q15Kp" target="_blank">Agendar una demo</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JS ───────────────────────────────────────────────── -->
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Smooth active nav link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+    });
+  });
+</script>
+</body>
+</html>
