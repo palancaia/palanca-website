@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palanca — IA para tu negocio</title>
+  <meta name="description" content="Automatizá tu agenda y atención al cliente con inteligencia artificial. Tu negocio opera solo, sin que toques el celular." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #09090f;
+      --bg-2:      #0e0e1a;
+      --bg-card:   #111120;
+      --bg-card-2: #16162a;
+      --blue:      #2563EB;
+      --blue-dim:  rgba(37,99,235,.12);
+      --blue-glow: rgba(37,99,235,.25);
+      --white:     #f0f0ff;
+      --muted:     #6b7280;
+      --muted-2:   #9ca3af;
+      --border:    rgba(255,255,255,.07);
+      --border-2:  rgba(255,255,255,.12);
+      --radius:    12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── Layout ───────────────────────────────────────────── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+    section { padding: 120px 0; }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 1.5px;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    h2.section-title {
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    p.section-sub {
+      font-size: 17px;
+      color: var(--muted-2);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* ─── Reveal animations (driven by Framer Motion) ─────── */
+    .reveal { opacity: 0; }
+
+    /* ─── Buttons ───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s ease;
+      letter-spacing: -0.2px;
+      position: relative;
+    }
+    .btn-primary {
+      background: var(--white);
+      color: #080810;
+    }
+    .btn-primary:hover { background: #e0e0f0; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted-2);
+      border: 1.5px solid var(--border-2);
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.25); color: var(--white); }
+    .btn-blue {
+      background: var(--blue);
+      color: #fff;
+    }
+    .btn-blue:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(37,99,235,.4); }
+
+    /* ─── NAV ───────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background: rgba(9,9,15,.85);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.8px;
+    }
+    .logo span { color: var(--blue); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+
+    /* ─── HERO ──────────────────────────────────────────────── */
+    #hero {
+      padding-top: 180px;
+      padding-bottom: 120px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* Grid background */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Radial glow layers */
+    .hero-glow {
+      position: absolute;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(ellipse at 50% 30%, var(--blue-glow) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 400px;
+      background: radial-gradient(ellipse at 50% 30%, rgba(37,99,235,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(37,99,235,.1);
+      border: 1px solid rgba(37,99,235,.25);
+      font-size: 13px;
+      font-weight: 500;
+      color: #93b4fd;
+      margin-bottom: 32px;
+    }
+    .hero-tag .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(.8); }
+    }
+
+    #hero h1 {
+      font-size: clamp(40px, 6.5vw, 76px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -3px;
+      margin-bottom: 28px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #2563EB 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #hero p.hero-sub {
+      font-size: 19px;
+      color: var(--muted-2);
+      max-width: 520px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 72px;
+    }
+
+    /* ─── Hero metrics strip ────────────────────────────────── */
+    .metrics-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    .metric {
+      padding: 28px 40px;
+      text-align: center;
+      position: relative;
+    }
+    .metric + .metric::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 20%; bottom: 20%;
+      width: 1px;
+      background: var(--border);
+    }
+    .metric-value {
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+    .metric-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    /* ─── SOCIAL PROOF ──────────────────────────────────────── */
+    #social-proof {
+      padding: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .social-proof-inner {
+      padding: 40px 0;
+    }
+    .social-proof-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted-2);
+      transition: all .2s;
+    }
+    .logo-badge:hover { border-color: rgba(255,255,255,.2); color: var(--white); }
+
+    /* ─── SPECIALTY ─────────────────────────────────────────── */
+    #especializacion {
+      background: var(--bg-2);
+      text-align: center;
+      padding: 100px 0;
+    }
+    .especializacion-inner { max-width: 860px; margin: 0 auto; }
+    .especializacion-statement {
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 0;
+    }
+    .especializacion-sub {
+      font-size: 17px;
+      color: var(--muted);
+      margin-top: 24px;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* ─── NEWS / INDUSTRY ───────────────────────────────────── */
+    #noticias { background: var(--bg); }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 60px;
+    }
+    .news-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .news-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--blue);
+      transition: height .3s ease;
+    }
+    .news-card:hover { transform: translateY(-4px); border-color: var(--border-2); box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+    .news-card:hover::before { height: 100%; }
+    .news-card-stat {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--white);
+      flex: 1;
+    }
+    .news-card-source {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .news-card-source svg { flex-shrink: 0; color: var(--blue); }
+
+    /* ─── PROBLEM ───────────────────────────────────────────── */
+    #problema { background: var(--bg-2); }
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 64px;
+    }
+    .problem-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .problem-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color .2s;
+    }
+    .problem-item:hover { border-color: var(--border-2); }
+    .problem-icon {
+      width: 36px; height: 36px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .problem-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--white); }
+    .problem-item p { font-size: 13px; color: var(--muted-2); line-height: 1.5; }
+
+    /* Phone mock */
+    .phone-mock {
+      background: var(--bg-card);
+      border: 1px solid var(--border-2);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 320px;
+      margin: 0 auto;
+      box-shadow: 0 40px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    .phone-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .phone-avatar {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #2563EB, #7c3aed);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 15px;
+    }
+    .phone-name { font-size: 14px; font-weight: 700; }
+    .phone-status { font-size: 11px; color: #4ade80; }
+    .chat-messages { display: flex; flex-direction: column; gap: 8px; }
+    .msg {
+      max-width: 88%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .msg-in {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      border-top-left-radius: 2px;
+      color: var(--muted-2);
+    }
+    .msg-out {
+      background: var(--blue);
+      color: #fff;
+      align-self: flex-end;
+      font-weight: 500;
+      border-bottom-right-radius: 2px;
+    }
+    .msg-typing {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 14px;
+      border-top-left-radius: 2px;
+      align-self: flex-start;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: type-bounce .8s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: .15s; }
+    .typing-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes type-bounce {
+      0%, 100% { transform: translateY(0); opacity: .5; }
+      50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* ─── FEATURES / SOLUTIONS ──────────────────────────────── */
+    #modulos { background: var(--bg); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 10% 0%, rgba(37,99,235,.08), transparent 70%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .feature-card:hover { border-color: var(--border-2); transform: translateY(-3px); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+    .feature-card:hover::before { opacity: 1; }
+
+    /* Corner squares on hover — inspired by 21st Dark Grid */
+    .feature-card .corner { position: absolute; width: 8px; height: 8px; background: var(--blue); opacity: 0; transition: opacity .2s; }
+    .feature-card .corner-tl { top: -1px; left: -1px; }
+    .feature-card .corner-tr { top: -1px; right: -1px; }
+    .feature-card .corner-bl { bottom: -1px; left: -1px; }
+    .feature-card .corner-br { bottom: -1px; right: -1px; }
+    .feature-card:hover .corner { opacity: 1; }
+
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.3px; }
+    .service-items { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .service-items li {
+      font-size: 13px;
+      color: var(--muted-2);
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.4;
+    }
+    .service-items li::before { content: '→'; position: absolute; left: 0; color: var(--blue); font-size: 10px; top: 2px; }
+
+    /* ─── PROCESS STEPS ─────────────────────────────────────── */
+    #como-funciona { background: var(--bg-2); }
+    .steps-wrap { position: relative; margin-top: 72px; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* Connecting line */
+    .steps-line {
+      position: absolute;
+      top: 44px;
+      left: calc(12.5% + 22px);
+      right: calc(12.5% + 22px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--blue) 0%, rgba(37,99,235,.1) 100%);
+      z-index: 0;
+    }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 36px 24px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      transition: border-color .2s;
+    }
+    .step:hover { border-color: var(--border-2); }
+    .step-number {
+      width: 52px; height: 52px;
+      background: var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 auto 20px;
+      box-shadow: 0 0 0 8px rgba(37,99,235,.1);
+    }
+    .step h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .step p { font-size: 13px; color: var(--muted-2); line-height: 1.6; }
+
+    /* ─── FAQ ───────────────────────────────────────────────── */
+    #faq { background: var(--bg); }
+    .faq-list {
+      margin-top: 56px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      gap: 16px;
+      transition: color .15s;
+    }
+    .faq-question:hover { color: var(--white); }
+    .faq-toggle {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .25s;
+      font-size: 14px;
+      color: var(--muted-2);
+    }
+    .faq-item.open .faq-toggle {
+      transform: rotate(45deg);
+      background: var(--blue-dim);
+      border-color: rgba(37,99,235,.3);
+      color: var(--blue);
+    }
+    .faq-answer {
+      font-size: 15px;
+      color: var(--muted-2);
+      line-height: 1.75;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4,0,.2,1), padding .35s;
+    }
+    .faq-item.open .faq-answer { max-height: 320px; padding-bottom: 24px; }
+
+    /* ─── CTA FINAL ─────────────────────────────────────────── */
+    #cta-final {
+      background: var(--bg-2);
+      text-align: center;
+    }
+    .cta-box {
+      border-radius: 32px;
+      padding: 88px 56px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, #0d1225, #0a0f1e);
+      border: 1px solid rgba(37,99,235,.3);
+    }
+
+    /* Animated border glow */
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 32px;
+      background: linear-gradient(145deg, rgba(37,99,235,.5), rgba(124,58,237,.3), transparent, rgba(37,99,235,.3));
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: destination-out;
+      padding: 1px;
+      pointer-events: none;
+    }
+
+    .cta-glow {
+      position: absolute;
+      top: -150px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(37,99,235,.2) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-box h2 {
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 900;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+      position: relative;
+    }
+    .cta-box p { font-size: 18px; color: var(--muted-2); margin-bottom: 48px; max-width: 520px; margin-left: auto; margin-right: auto; position: relative; }
+    .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; }
+    .cta-note { font-size: 13px; color: var(--muted); margin-top: 20px; position: relative; }
+
+    /* ─── FOOTER ────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+      background: var(--bg);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { font-size: 13px; color: var(--muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--white); }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      section { padding: 80px 0; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .steps-line { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 64px 0; }
+      .nav-links { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .metric { padding: 20px 24px; }
+      .metric-value { font-size: 32px; }
+      .cta-box { padding: 56px 28px; }
+      #hero h1 { letter-spacing: -1.5px; }
+      .metrics-strip { flex-direction: column; width: 100%; max-width: 280px; }
+      .metric + .metric::before { width: 60%; height: 1px; left: 20%; top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────── -->
+<nav>
+  <div class="container nav-inner">
+    <div class="logo">palanca<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#especializacion">Lo que hacemos</a></li>
+      <li><a href="#noticias">Industria</a></li>
+      <li><a href="#modulos">Soluciones</a></li>
+      <li><a href="#como-funciona">Proceso</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary">Hablemos →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container" style="position:relative; z-index:1;">
+
+    <div class="hero-tag reveal" id="hero-tag">
+      <div class="dot"></div>
+      Sistema de IA para consultorios y empresas
+    </div>
+
+    <h1 class="reveal" id="hero-h1">
+      El socio de IA definitivo<br>
+      <span class="gradient-text">para consultorios y empresas que crecen.</span>
+    </h1>
+
+    <p class="hero-sub reveal" id="hero-p">
+      Un sistema de IA que responde WhatsApp, agenda turnos y manda
+      recordatorios automáticos — 24/7, sin que vos estés presente.
+    </p>
+
+    <div class="hero-actions reveal" id="hero-actions">
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary">
+        Agendar llamada gratis →
+      </a>
+      <a href="#como-funciona" class="btn btn-secondary">Cómo funciona</a>
+    </div>
+
+    <div class="reveal" id="hero-metrics" style="display:flex; justify-content:center;">
+      <div class="metrics-strip">
+        <div class="metric">
+          <div class="metric-value" data-count="-73">-73%</div>
+          <div class="metric-label">Mensajes manuales<br>de WhatsApp por día</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" data-count="+40">+40%</div>
+          <div class="metric-label">Reducción de<br>no-shows</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" data-count="100">100%</div>
+          <div class="metric-label">Onboarding<br>guiado</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── SOCIAL PROOF ─────────────────────────────────────────── -->
+<section id="social-proof">
+  <div class="container social-proof-inner reveal">
+    <p class="social-proof-label">Funciona para tu tipo de negocio</p>
+    <div class="logos">
+      <span class="logo-badge">🦷 Odontología</span>
+      <span class="logo-badge">💆 Estética y belleza</span>
+      <span class="logo-badge">🎾 Padel &amp; deportes</span>
+      <span class="logo-badge">🏥 Medicina general</span>
+      <span class="logo-badge">💊 Especialidades</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SPECIALTY ────────────────────────────────────────────── -->
+<section id="especializacion">
+  <div class="container">
+    <div class="especializacion-inner reveal">
+      <span class="section-label">Lo que hacemos</span>
+      <p class="especializacion-statement">
+        Sistemas de IA de punta a punta que<br>
+        <span class="gradient-text">generan leads, cierran ventas</span><br>
+        y escalan operaciones.
+      </p>
+      <p class="especializacion-sub">— construidos y gestionados por un equipo que lo implementó en decenas de negocios.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INDUSTRY STATS ───────────────────────────────────────── -->
+<section id="noticias">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">La industria habla</span>
+      <h2 class="section-title">La IA no es el futuro.<br>Ya está pasando.</h2>
+    </div>
+    <div class="news-grid">
+      <a class="news-card reveal" href="https://massimple.digital/nueve-estadisticas-reveladoras-sobre-la-importancia-del-tiempo-de-respuesta-a-tus-leads/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"Responder dentro de los 5 minutos hace 21 veces más probable cerrar ese lead que si tardás 30 minutos."</p>
+        <span class="news-card-source">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          MasSimple Digital
+        </span>
+      </a>
+      <a class="news-card reveal" href="https://nexoestelar.com/automatizacion-procesos-pymes-argentina-2025/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"Las PyMEs que automatizan WhatsApp reportan un ahorro del 50–70% en tiempo de atención y reducen costos hasta un 30%."</p>
+        <span class="news-card-source">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Nexo Estelar · 2025
+        </span>
+      </a>
+      <a class="news-card reveal" href="https://www.lanacion.com.ar/economia/IA/el-81-de-las-empresas-argentinas-ya-adopta-ia-de-alguna-manera-en-su-negocio-nid03072025/" target="_blank" rel="noopener">
+        <p class="news-card-stat">"El 81% de las empresas argentinas ya adopta IA — y el 72% reporta mejoras concretas en eficiencia y tiempo."</p>
+        <span class="news-card-source">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          La Nación
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ──────────────────────────────────────────────── -->
+<section id="problema">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">El problema</span>
+      <h2 class="section-title">Cada turno se pierde<br>entre mensajes de WhatsApp.</h2>
+    </div>
+    <div class="problem-grid">
+      <ul class="problem-list">
+        <li class="problem-item reveal">
+          <div class="problem-icon">📱</div>
+          <div>
+            <h4>Respondés WhatsApp todo el día</h4>
+            <p>Disponibilidad, precio, obras sociales, cancelaciones — interrumpiendo cada cosa que hacés.</p>
+          </div>
+        </li>
+        <li class="problem-item reveal">
+          <div class="problem-icon">❌</div>
+          <div>
+            <h4>Los no-shows te cuestan plata directa</h4>
+            <p>Un turno sin confirmar es plata perdida. El recordatorio manual siempre se olvida.</p>
+          </div>
+        </li>
+        <li class="problem-item reveal">
+          <div class="problem-icon">🌙</div>
+          <div>
+            <h4>Después de las 18hs, no respondés</h4>
+            <p>El paciente que escribe a las 9pm se va a la competencia que responde más rápido.</p>
+          </div>
+        </li>
+        <li class="problem-item reveal">
+          <div class="problem-icon">📋</div>
+          <div>
+            <h4>La agenda vive en tu cabeza</h4>
+            <p>Sin sistema, dependés de acordarte vos — y cuando te olvidás, se genera el caos.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="phone-mock reveal">
+        <div class="phone-header">
+          <div class="phone-avatar">P</div>
+          <div>
+            <div class="phone-name">Paciente nuevo</div>
+            <div class="phone-status">● en línea</div>
+          </div>
+        </div>
+        <div class="chat-messages">
+          <div class="msg msg-in">Hola! tienen turno para el martes?</div>
+          <div class="msg msg-in">o miercoles a la mañana</div>
+          <div class="msg msg-in">cuanto cobran la consulta?</div>
+          <div class="msg msg-in">hacen galeno?</div>
+          <div class="msg msg-typing">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOLUTIONS / MODULES ──────────────────────────────────── -->
+<section id="modulos">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Nuestras soluciones</span>
+      <h2 class="section-title">En qué nos especializamos.</h2>
+      <p class="section-sub">Sistemas de IA de punta a punta que generan leads, cierran ventas y escalan operaciones.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">💬</div>
+        <h3>Atención al cliente IA</h3>
+        <ul class="service-items">
+          <li>WhatsApp 24/7</li>
+          <li>Respuestas instantáneas</li>
+          <li>Derivación inteligente</li>
+        </ul>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">📅</div>
+        <h3>Agenda automática</h3>
+        <ul class="service-items">
+          <li>Reserva por WhatsApp</li>
+          <li>Sincronización con calendario</li>
+          <li>Sin intermediarios</li>
+        </ul>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">🔔</div>
+        <h3>Recordatorios y confirmaciones</h3>
+        <ul class="service-items">
+          <li>WhatsApp automático 48hs antes</li>
+          <li>Confirmación con 1 click</li>
+          <li>Reducción de no-shows</li>
+        </ul>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">🔄</div>
+        <h3>Reactivación de clientes</h3>
+        <ul class="service-items">
+          <li>Secuencias automáticas</li>
+          <li>Segmentación por inactividad</li>
+          <li>Recuperación de leads fríos</li>
+        </ul>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">🎯</div>
+        <h3>Generación de leads</h3>
+        <ul class="service-items">
+          <li>Captura por Instagram / Meta</li>
+          <li>Speed-to-lead automático</li>
+          <li>CRM en Google Sheets</li>
+        </ul>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <div class="feature-icon">📊</div>
+        <h3>Reportes y visibilidad</h3>
+        <ul class="service-items">
+          <li>Dashboard en tiempo real</li>
+          <li>Notificaciones por Gmail</li>
+          <li>Métricas de conversión</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROCESS ──────────────────────────────────────────────── -->
+<section id="como-funciona">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Proceso</span>
+      <h2 class="section-title">De la primera llamada<br>al lanzamiento.</h2>
+      <p class="section-sub">Sin código, sin sorpresas. Sabés exactamente qué vas a recibir antes de arrancar.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="steps-line"></div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-number">1</div>
+          <h3>Auditoría del embudo</h3>
+          <p>Sesión gratuita de 30 min. Auditamos tu flujo, identificamos cuellos de botella y mapeamos dónde la IA mueve el resultado.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">2</div>
+          <h3>Propuesta concreta</h3>
+          <p>Entregamos alcance, cronograma y precio fijo. Sin sorpresas, sin cobro por hora. Sabés exactamente qué vas a recibir.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">3</div>
+          <h3>Construcción y lanzamiento</h3>
+          <p>Construimos, probamos y desplegamos tu sistema. Recibís actualizaciones semanales y un producto funcionando.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">4</div>
+          <h3>Gestión continua</h3>
+          <p>Retainer opcional para monitoreo, optimización e iteración. La mayoría de los clientes ve retornos crecientes con el tiempo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ──────────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="container">
+    <div class="reveal" style="text-align:center; margin-bottom:0;">
+      <span class="section-label" style="justify-content:center;">Preguntas frecuentes</span>
+      <h2 class="section-title" style="max-width:560px; margin:0 auto 0;">Lo que nos preguntan antes de arrancar.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-question">¿Tengo que cambiar mi número de WhatsApp? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">No. Usamos tu número actual a través de WhatsApp Business. El sistema se conecta a tu cuenta existente, no necesitás un número nuevo.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">¿Qué pasa si el paciente hace una pregunta que el sistema no sabe responder? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">El sistema deriva la conversación a vos con una notificación. Siempre podés tomar el control cuando necesitás. El bot maneja el 80-90% de las consultas rutinarias solo.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">¿Funciona con obras sociales y prepagas? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Sí. Configuramos el sistema con la información de las obras sociales que aceptás. El bot puede responder qué obras cubren y qué cobertura aplica a cada prestación.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">¿Cuánto tarda la implementación? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Depende de la complejidad. En la llamada de discovery definimos juntos los tiempos. La primera etapa es construir el sistema, la segunda son pruebas y ajustes con vos antes de salir en producción.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">¿Qué pasa si quiero cancelar? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">El retainer es mensual, sin permanencia mínima. Si en cualquier momento querés cancelar, avisás y listo. El sistema que construimos queda tuyo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─────────────────────────────────────────────── -->
+<section id="cta-final">
+  <div class="container">
+    <div class="cta-box reveal">
+      <div class="cta-glow"></div>
+      <h2>¿Listo para escalar<br><span class="gradient-text">con IA?</span></h2>
+      <p>Agendá una llamada gratuita de 30 minutos. Auditamos tu embudo, encontramos los cuellos de botella y te mostramos exactamente dónde la IA mueve el resultado.</p>
+      <div class="cta-actions">
+        <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-blue" style="font-size:16px; padding:16px 40px;">
+          Agendar llamada de crecimiento gratis →
+        </a>
+      </div>
+      <p class="cta-note">Sin compromiso · Sin contrato · Resultados en semanas</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <div class="logo">palanca<span>.</span></div>
+      <div class="footer-copy">© 2026 Palanca · Buenos Aires, Argentina</div>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:consultas.palanca@gmail.com">consultas.palanca@gmail.com</a>
+      <a href="https://tally.so/r/9q15Kp" target="_blank">Agendar una demo</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ───────────────────────────────────────────────── -->
+
+<!-- FAQ accordion -->
+<script>
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      const active = a.getAttribute('href') === '#' + current;
+      a.style.color = active ? '#f0f0ff' : '';
+    });
+  });
+</script>
+
+<!-- Framer Motion animations -->
+<script type="module">
+  import { animate, inView, stagger } from 'https://cdn.jsdelivr.net/npm/motion@11/+esm';
+
+  // ── Hero entrance (staggered) ──────────────────────────────
+  const heroEls = [
+    '#hero-tag',
+    '#hero-h1',
+    '#hero-p',
+    '#hero-actions',
+    '#hero-metrics'
+  ];
+
+  heroEls.forEach((sel, i) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    animate(
+      el,
+      { opacity: [0, 1], y: [36, 0] },
+      { duration: 0.7, delay: 0.1 + i * 0.12, easing: [0.22, 1, 0.36, 1] }
+    );
+  });
+
+  // ── Scroll-triggered reveals ───────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+
+  // Skip hero elements (already animated above)
+  const heroIds = new Set(heroEls.map(s => s.replace('#', '')));
+
+  revealEls.forEach(el => {
+    if (heroIds.has(el.id)) return;
+
+    inView(el, () => {
+      animate(
+        el,
+        { opacity: [0, 1], y: [28, 0] },
+        { duration: 0.6, easing: [0.22, 1, 0.36, 1] }
+      );
+    }, { amount: 0.15 });
+  });
+
+  // ── Feature cards stagger ──────────────────────────────────
+  inView('.features-grid', () => {
+    const cards = document.querySelectorAll('.feature-card');
+    animate(
+      cards,
+      { opacity: [0, 1], y: [24, 0], scale: [0.96, 1] },
+      { duration: 0.5, delay: stagger(0.08), easing: [0.22, 1, 0.36, 1] }
+    );
+  }, { amount: 0.1 });
+
+  // ── Process steps stagger ─────────────────────────────────
+  inView('.steps', () => {
+    const steps = document.querySelectorAll('.step');
+    animate(
+      steps,
+      { opacity: [0, 1], y: [24, 0] },
+      { duration: 0.5, delay: stagger(0.1), easing: [0.22, 1, 0.36, 1] }
+    );
+  }, { amount: 0.1 });
+
+  // ── Problem items stagger ─────────────────────────────────
+  inView('.problem-list', () => {
+    const items = document.querySelectorAll('.problem-item');
+    animate(
+      items,
+      { opacity: [0, 1], x: [-16, 0] },
+      { duration: 0.5, delay: stagger(0.08), easing: [0.22, 1, 0.36, 1] }
+    );
+  }, { amount: 0.1 });
+
+  // ── News cards stagger ────────────────────────────────────
+  inView('.news-grid', () => {
+    const cards = document.querySelectorAll('.news-card');
+    animate(
+      cards,
+      { opacity: [0, 1], y: [20, 0] },
+      { duration: 0.5, delay: stagger(0.1), easing: [0.22, 1, 0.36, 1] }
+    );
+  }, { amount: 0.1 });
+
+  // ── FAQ items stagger ─────────────────────────────────────
+  inView('.faq-list', () => {
+    const items = document.querySelectorAll('.faq-item');
+    animate(
+      items,
+      { opacity: [0, 1], y: [12, 0] },
+      { duration: 0.4, delay: stagger(0.07), easing: [0.22, 1, 0.36, 1] }
+    );
+  }, { amount: 0.1 });
+
+  // ── Scroll parallax on hero glows ────────────────────────
+  const glow1 = document.querySelector('.hero-glow');
+  const glow2 = document.querySelector('.hero-glow-2');
+
+  if (glow1) {
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      glow1.style.transform = `translateX(-50%) translateY(${y * 0.3}px)`;
+      if (glow2) glow2.style.transform = `translateX(-50%) translateY(${y * 0.2}px)`;
+    }, { passive: true });
+  }
+</script>
+
+</body>
+</html>

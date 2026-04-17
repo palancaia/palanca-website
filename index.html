@@ -3,861 +3,714 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Palanca — IA para tu negocio</title>
-  <meta name="description" content=""El socio de IA definitivo para consultorios y empresas que crecen." />
+  <title>Palanca — Tu equipo de ventas IA para creadores</title>
+  <meta name="description" content="Agentes conversacionales con IA que califican leads, cierran ventas y agendan llamadas 24/7 — en tu voz, en autopiloto. Hecho para creadores de contenido en LATAM." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'sans-serif'] },
+          colors: {
+            coral: { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c' },
+            navy: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617' },
+          },
+        },
+      },
+    };
+  </script>
   <style>
-    /* ─── Reset & Base ─────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:       #181828;
-      --bg-card:  #1e1e30;
-      --bg-card2: #252540;
-      --green:    #2563EB;
-      --green-dim:#2563EB18;
-      --blue:     #2563EB;
-      --blue-dim: #2563EB18;
-      --white:    #FFFFFF;
-      --muted:    #888888;
-      --border:   #2a2a42;
-      --radius:   12px;
-      --radius-lg:20px;
-    }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--white);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
+    body { -webkit-font-smoothing: antialiased; }
 
-    /* ─── Layout helpers ────────────────────────────────── */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 96px 0; }
-    .section-label {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 16px;
-    }
-    h2.section-title {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    p.section-sub {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 560px;
-    }
-    .tag {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 600;
-      background: var(--green-dim);
-      color: var(--green);
-    }
+    /* Reveal animations */
+    .reveal { opacity: 0; transform: translateY(24px); }
+    .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-delay-1.visible { transition-delay: 0.08s; }
+    .reveal-delay-2.visible { transition-delay: 0.16s; }
+    .reveal-delay-3.visible { transition-delay: 0.24s; }
 
-    /* ─── Buttons ───────────────────────────────────────── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 100px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all .18s ease;
-      letter-spacing: -0.2px;
-    }
-    .btn-primary {
-      background: var(--white);
-      color: #0A0A0A;
-    }
-    .btn-primary:hover { background: #e8e8e8; transform: translateY(-1px); }
-    .btn-secondary {
-      background: transparent;
-      color: var(--white);
-      border: 1.5px solid #333;
-    }
-    .btn-secondary:hover { border-color: var(--white); }
-    .btn-arrow::after { content: ' →'; }
+    /* Gradient utilities */
+    .gradient-btn { background: linear-gradient(135deg, #f97316 0%, #3b82f6 100%); }
+    .gradient-btn:hover { background: linear-gradient(135deg, #ea580c 0%, #2563eb 100%); transform: translateY(-2px); box-shadow: 0 16px 48px rgba(249,115,22,0.25); }
+    .gradient-text { background: linear-gradient(135deg, #f97316 0%, #3b82f6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* ─── Especialización ──────────────────────────────── */
-    #especializacion {
-      background: var(--bg-card);
-      text-align: center;
-      padding: 96px 0;
-    }
-    .especializacion-inner { max-width: 900px; margin: 0 auto; }
-    .especializacion-inner .section-label { margin-bottom: 32px; }
-    .especializacion-statement {
-      font-size: clamp(28px, 4.5vw, 54px);
-      font-weight: 900;
-      line-height: 1.15;
-      letter-spacing: -1.5px;
-      color: var(--white);
-      margin-bottom: 0;
-    }
-    .especializacion-statement .accent { color: var(--green); }
-    .especializacion-sub {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--muted);
-      margin-top: 20px;
-      font-weight: 400;
-      font-style: italic;
-    }
-
-    /* ─── News section ──────────────────────────────────── */
-    #noticias { background: var(--bg); }
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 64px;
-    }
-    .news-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--green);
-      border-radius: var(--radius);
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      text-decoration: none;
-      color: inherit;
-      transition: transform .2s, border-color .2s;
-    }
-    .news-card:hover { transform: translateY(-4px); border-color: var(--green); }
-    .news-card-stat {
-      font-size: clamp(17px, 2vw, 20px);
-      font-weight: 800;
-      line-height: 1.3;
-      color: var(--white);
-    }
-    .news-card-source {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: auto;
-    }
-    .news-card-source svg { flex-shrink: 0; }
-    @media (max-width: 768px) { .news-grid { grid-template-columns: 1fr; } }
-
-    /* ─── Nav ───────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
+    /* Liquid glass card */
+    .glass-card {
+      background: rgba(255,255,255,0.7);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      background: rgba(18,18,30,.92);
-      border-bottom: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
-    .logo {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--white);
-      letter-spacing: -0.5px;
-    }
-    .logo span { color: var(--green); }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: 14px;
-      color: var(--muted);
-      transition: color .15s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta { display: flex; align-items: center; gap: 12px; }
-
-    /* ─── Hero ──────────────────────────────────────────── */
-    #hero {
-      padding-top: 160px;
-      padding-bottom: 96px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-glow {
-      position: absolute;
-      top: -200px; left: 50%;
-      transform: translateX(-50%);
-      width: 800px; height: 600px;
-      background: radial-gradient(ellipse at center, rgba(37,99,235,.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    #hero .tag { margin-bottom: 24px; }
-    #hero h1 {
-      font-size: clamp(38px, 6vw, 68px);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-    }
-    #hero h1 .accent { color: var(--green); }
-    #hero p {
-      font-size: 19px;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 40px;
-    }
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 64px;
-    }
-    .hero-metrics {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      flex-wrap: wrap;
-      padding: 32px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      max-width: 680px;
-      margin: 0 auto;
-    }
-    .metric { text-align: center; }
-    .metric-value {
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--green);
-      line-height: 1;
-    }
-    .metric-label {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-    .metric-divider {
-      width: 1px;
-      background: var(--border);
-      align-self: stretch;
+    .glass-card:hover {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+      transform: translateY(-4px);
     }
 
-    /* ─── Logos / Social proof ──────────────────────────── */
-    #social-proof { padding: 48px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .social-proof-label {
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 32px;
-    }
-    .logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .logo-badge {
-      padding: 10px 20px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
+    /* Phone frame */
+    .phone-frame {
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
     }
 
-    /* ─── Problem ───────────────────────────────────────── */
-    #problema { background: var(--bg-card); }
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-      margin-top: 64px;
-    }
-    .problem-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-    .problem-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      padding: 20px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .problem-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .problem-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-    .problem-item p { font-size: 14px; color: var(--muted); }
-    .phone-mock {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      max-width: 320px;
-      margin: 0 auto;
-    }
-    .phone-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .phone-avatar {
-      width: 40px; height: 40px;
-      background: var(--green);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: var(--bg);
-      font-size: 16px;
-    }
-    .phone-name { font-size: 15px; font-weight: 600; }
-    .phone-status { font-size: 12px; color: var(--green); }
-    .chat-messages { display: flex; flex-direction: column; gap: 10px; }
-    .msg {
-      max-width: 85%;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .msg-in {
-      background: var(--bg-card2);
-      border: 1px solid var(--border);
-      align-self: flex-start;
-      border-radius: 2px 12px 12px 12px;
-    }
-    .msg-out {
-      background: var(--green);
-      color: var(--bg);
-      align-self: flex-end;
-      font-weight: 500;
-      border-radius: 12px 12px 2px 12px;
-    }
-    .msg-time { font-size: 10px; opacity: .5; margin-top: 4px; text-align: right; }
-    .msg-typing {
-      background: var(--bg-card2);
-      border: 1px solid var(--border);
-      padding: 12px 16px;
-      border-radius: 12px;
-      align-self: flex-start;
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: bounce .8s infinite; }
-    .dot:nth-child(2) { animation-delay: .15s; }
-    .dot:nth-child(3) { animation-delay: .3s; }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+    /* Chat bubbles */
+    .chat-bubble-in { background: #f1f5f9; border-radius: 18px 18px 18px 4px; }
+    .chat-bubble-out { background: linear-gradient(135deg, #f97316, #fb923c); border-radius: 18px 18px 4px 18px; color: white; }
+
+    /* Step number gradient */
+    .step-gradient { background: linear-gradient(135deg, #f97316, #3b82f6); }
+
+    /* FAQ */
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* Floating animation */
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .float { animation: float 4s ease-in-out infinite; }
+
+    /* Typing dots */
+    @keyframes typing { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    .typing-dot { animation: typing 1s ease-in-out infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Dashboard pulse */
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+    /* Subtle gradient bg */
+    .gradient-bg {
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(249,115,22,0.06) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59,130,246,0.04) 0%, transparent 70%);
     }
 
-    /* ─── How it works ──────────────────────────────────── */
-    #como-funciona { background: var(--bg-card); }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      margin-top: 64px;
-      position: relative;
-    }
-    .steps::before {
-      content: '';
-      position: absolute;
-      top: 60px;
-      left: calc(12.5% + 16px);
-      right: calc(12.5% + 16px);
-      height: 2px;
-      background: linear-gradient(90deg, var(--green), var(--blue));
-      opacity: .4;
-    }
-    .step {
-      text-align: center;
-      padding: 32px 24px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      position: relative;
-    }
-    .step-number {
-      width: 56px; height: 56px;
-      background: var(--green);
-      color: var(--bg);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 800;
-      margin: 0 auto 20px;
-    }
-    .step h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
-    .step p { font-size: 14px; color: var(--muted); }
-
-    /* ─── Features ──────────────────────────────────────── */
-    #modulos { background: var(--bg); }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 64px;
-    }
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      transition: border-color .2s, transform .2s;
-    }
-    .feature-card:hover { border-color: #444; transform: translateY(-2px); }
-    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.3px; }
-    .service-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .service-items li { font-size: 14px; color: var(--muted); padding-left: 16px; position: relative; }
-    .service-items li::before { content: '—'; position: absolute; left: 0; color: #444; }
-
-    /* ─── FAQ ───────────────────────────────────────────── */
-    #faq { background: var(--bg-card); }
-    .faq-list { margin-top: 48px; max-width: 720px; margin-left: auto; margin-right: auto; }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-    }
-    .faq-question {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 0;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-    }
-    .faq-toggle { color: var(--muted); font-size: 20px; transition: transform .2s; flex-shrink: 0; }
-    .faq-item.open .faq-toggle { transform: rotate(45deg); color: var(--green); }
-    .faq-answer {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.7;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height .3s ease, padding .3s;
-    }
-    .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 22px; }
-
-    /* ─── CTA Final ─────────────────────────────────────── */
-    #cta-final {
-      background: var(--bg);
-      text-align: center;
-    }
-    .cta-box {
-      background: linear-gradient(135deg, #111629, #0d1528);
-      border: 1px solid var(--green);
-      border-radius: 24px;
-      padding: 72px 48px;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-glow {
-      position: absolute;
-      top: -100px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(37,99,235,.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-box h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; margin-bottom: 16px; letter-spacing: -1px; }
-    .cta-box p { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
-    .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .cta-note { font-size: 13px; color: var(--muted); margin-top: 20px; }
-
-    /* ─── Footer ────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
-    }
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .footer-copy { font-size: 14px; color: var(--muted); }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a { font-size: 14px; color: var(--muted); transition: color .15s; }
-    .footer-links a:hover { color: var(--white); }
-
-    /* ─── Responsive ────────────────────────────────────── */
-    @media (max-width: 768px) {
-      section { padding: 64px 0; }
-      .problem-grid { grid-template-columns: 1fr; }
-      .steps { grid-template-columns: 1fr; }
-      .steps::before { display: none; }
-      .features-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      .hero-metrics { gap: 24px; }
-      .metric-divider { display: none; }
-      .cta-box { padding: 48px 24px; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+      .reveal.visible { transition: none; }
+      .float { animation: none; }
+      .typing-dot { animation: none; opacity: 0.6; }
+      .pulse-dot { animation: none; }
     }
   </style>
 </head>
-<body>
+<body class="font-sans text-navy-800 bg-white">
 
-<!-- ─── NAV ─────────────────────────────────────────────── -->
-<nav>
-  <div class="container nav-inner">
-    <div class="logo">palanca<span>.</span></div>
-    <ul class="nav-links">
-      <li><a href="#especializacion">Lo que hacemos</a></li>
-      <li><a href="#noticias">Industria</a></li>
-      <li><a href="#modulos">Soluciones</a></li>
-      <li><a href="#como-funciona">Proceso</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow">Hablemos</a>
+<!-- ─── NAV ──────────────────────────────────────────────── -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-navy-100/60">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#" class="text-xl font-black tracking-tight cursor-pointer">palanca<span class="text-coral-500">.</span></a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#problema" class="text-sm font-medium text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">Problema</a>
+      <a href="#solucion" class="text-sm font-medium text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">Solución</a>
+      <a href="#dashboard" class="text-sm font-medium text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">Dashboard</a>
+      <a href="#proceso" class="text-sm font-medium text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">Proceso</a>
+      <a href="#faq" class="text-sm font-medium text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">FAQ</a>
     </div>
+    <a href="https://tally.so/r/9q15Kp" target="_blank" class="gradient-btn text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all cursor-pointer">
+      Agendar llamada →
+    </a>
   </div>
 </nav>
 
 <!-- ─── HERO ─────────────────────────────────────────────── -->
-<section id="hero">
-  <div class="container" style="position:relative; z-index:1;">
-    <div class="hero-glow"></div>
-    <h1>
-      El socio de IA definitivo<br>
-      <span class="accent">para consultorios y empresas que crecen.</span>
-    </h1>
-    <p>
-      Un sistema de IA que responde WhatsApp, agenda turnos y manda
-      recordatorios automáticos — 24/7, sin que vos estés presente.
-    </p>
-    <div class="hero-actions">
-      <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow">
-        Agendar llamada gratis
-      </a>
-      <a href="#como-funciona" class="btn btn-secondary">Cómo funciona</a>
+<section class="pt-32 pb-20 md:pt-44 md:pb-32 gradient-bg overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+
+      <!-- Left: Copy -->
+      <div>
+        <div class="reveal inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-coral-50 border border-coral-200/60 text-coral-600 text-xs font-bold tracking-widest uppercase mb-8">
+          <span class="w-2 h-2 bg-coral-500 rounded-full pulse-dot"></span>
+          Para creadores de contenido
+        </div>
+        <h1 class="reveal text-4xl md:text-[3.5rem] lg:text-[4rem] font-black leading-[1.05] tracking-tight mb-7">
+          Tu equipo de ventas IA,<br>
+          <span class="gradient-text">hecho para creadores.</span>
+        </h1>
+        <p class="reveal text-lg md:text-xl text-navy-500 leading-relaxed mb-10 max-w-lg">
+          Agentes conversacionales que califican leads y cierran ventas 24/7 — en autopiloto, con tu voz.
+        </p>
+        <div class="reveal flex flex-wrap gap-4">
+          <a href="https://tally.so/r/9q15Kp" target="_blank" class="gradient-btn text-white font-bold px-8 py-4 rounded-full transition-all text-base cursor-pointer">
+            Agendar llamada gratis →
+          </a>
+          <a href="#proceso" class="px-8 py-4 rounded-full border-2 border-navy-200 text-navy-600 font-bold hover:border-navy-400 hover:text-navy-900 transition-all text-base cursor-pointer">
+            Cómo funciona
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Phone Chat Demo -->
+      <div class="reveal float">
+        <div class="phone-frame p-6 max-w-sm mx-auto">
+          <div class="flex items-center gap-3 pb-4 mb-4 border-b border-navy-100">
+            <div class="w-10 h-10 rounded-full step-gradient flex items-center justify-center text-white font-bold text-sm">P</div>
+            <div>
+              <div class="font-bold text-sm">Palanca IA</div>
+              <div class="text-xs text-emerald-500 font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full pulse-dot"></span> En línea
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2.5">
+            <div class="chat-bubble-in px-4 py-2.5 text-sm text-navy-700 max-w-[85%]">
+              Hola! Vi tu post sobre la mentoría. ¿Cómo funciona?
+            </div>
+            <div class="chat-bubble-out px-4 py-2.5 text-sm max-w-[85%] self-end">
+              ¡Hola! La mentoría 1:1 incluye 4 sesiones mensuales + comunidad. ¿Buscás algo personalizado?
+            </div>
+            <div class="chat-bubble-in px-4 py-2.5 text-sm text-navy-700 max-w-[85%]">
+              Sí, ¿cuánto sale y tiene agenda esta semana?
+            </div>
+            <div class="chat-bubble-out px-4 py-2.5 text-sm max-w-[85%] self-end">
+              Perfecto, te dejo el link para agendar tu call de discovery gratuita 👇
+            </div>
+            <div class="chat-bubble-out px-4 py-2.5 text-sm max-w-[85%] self-end font-semibold">
+              📅 cal.com/creator/discovery
+            </div>
+            <div class="chat-bubble-in px-3.5 py-3 max-w-[60px] flex gap-1.5 items-center">
+              <span class="typing-dot w-2 h-2 rounded-full bg-navy-300"></span>
+              <span class="typing-dot w-2 h-2 rounded-full bg-navy-300"></span>
+              <span class="typing-dot w-2 h-2 rounded-full bg-navy-300"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="hero-metrics">
-      <div class="metric">
-        <div class="metric-value">-73%</div>
-        <div class="metric-label">Mensajes manuales<br>de WhatsApp por día</div>
-      </div>
-      <div class="metric-divider"></div>
-      <div class="metric">
-        <div class="metric-value">+40%</div>
-        <div class="metric-label">Reducción de<br>no-shows</div>
-      </div>
-      <div class="metric-divider"></div>
-      <div class="metric">
-        <div class="metric-value">100%</div>
-        <div class="metric-label">Onboarding<br>guiado</div>
+
+    <!-- Metrics strip -->
+    <div class="reveal mt-20 flex justify-center">
+      <div class="glass-card inline-flex flex-wrap justify-center rounded-2xl overflow-hidden">
+        <div class="px-10 py-7 text-center">
+          <div class="text-3xl md:text-4xl font-black gradient-text">24/7</div>
+          <div class="text-xs text-navy-500 mt-1.5 font-medium">Siempre disponible</div>
+        </div>
+        <div class="px-10 py-7 text-center border-l border-navy-100/60">
+          <div class="text-3xl md:text-4xl font-black gradient-text">3.5x</div>
+          <div class="text-xs text-navy-500 mt-1.5 font-medium">Más conversiones</div>
+        </div>
+        <div class="px-10 py-7 text-center border-l border-navy-100/60">
+          <div class="text-3xl md:text-4xl font-black gradient-text">-80%</div>
+          <div class="text-xs text-navy-500 mt-1.5 font-medium">Tiempo en DMs</div>
+        </div>
+        <div class="px-10 py-7 text-center border-l border-navy-100/60">
+          <div class="text-3xl md:text-4xl font-black gradient-text">5 días</div>
+          <div class="text-xs text-navy-500 mt-1.5 font-medium">Implementación</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ─── SOCIAL PROOF ─────────────────────────────────────── -->
-<section id="social-proof">
-  <div class="container">
-    <p class="social-proof-label">Funciona para tu tipo de consultorio</p>
-    <div class="logos">
-      <span class="logo-badge">🦷 Odontología</span>
-      <span class="logo-badge">💆 Estética y belleza</span>
-      <span class="logo-badge">🎾 Padel &amp; deportes</span>
-      <span class="logo-badge">🏥 Medicina general</span>
-      <span class="logo-badge">💊 Especialidades</span>
+<section class="py-8 border-y border-navy-100/60">
+  <div class="max-w-6xl mx-auto px-6">
+    <p class="text-center text-[11px] text-navy-400 uppercase tracking-[3px] font-bold mb-5">Funciona para tu tipo de negocio</p>
+    <div class="flex flex-wrap justify-center gap-2.5">
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="target" class="w-4 h-4 text-coral-500"></i> Coaches
+      </span>
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="book-open" class="w-4 h-4 text-coral-500"></i> Infoproductores
+      </span>
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="dumbbell" class="w-4 h-4 text-coral-500"></i> Fitness & nutrición
+      </span>
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="brain" class="w-4 h-4 text-coral-500"></i> Psicólogos online
+      </span>
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="graduation-cap" class="w-4 h-4 text-coral-500"></i> Educadores
+      </span>
+      <span class="group px-5 py-2.5 glass-card rounded-full text-sm text-navy-600 font-medium cursor-default flex items-center gap-2">
+        <i data-lucide="trending-up" class="w-4 h-4 text-coral-500"></i> Consultores
+      </span>
     </div>
   </div>
 </section>
 
-<!-- ─── 1 · LO QUE HACEMOS ───────────────────────────────── -->
-<section id="especializacion">
-  <div class="container">
-    <div class="especializacion-inner">
-      <span class="section-label">Lo que hacemos</span>
-      <p class="especializacion-statement">
-        Sistemas de IA de punta a punta que<br>
-        <span class="accent">generan leads, cierran ventas</span><br>
-        y escalan operaciones.
-      </p>
-      <p class="especializacion-sub">— construidos y gestionados por un equipo que lo implementó en decenas de negocios.</p>
+<!-- ─── PROBLEM ──────────────────────────────────────────── -->
+<section id="problema" class="py-28">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">El problema</span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-[1.1]">
+        Atraés atención, pero no<br>podés escalar tus ventas.
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+      <div class="glass-card rounded-2xl p-8 reveal">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral-50 to-coral-100 border border-coral-200/40 flex items-center justify-center mb-5">
+          <i data-lucide="message-circle" class="w-5 h-5 text-coral-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2.5 text-navy-900">Tus DMs están explotados</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Pasás 3-5 horas al día respondiendo preguntas repetitivas sobre precios, disponibilidad y cómo arrancar. Tiempo que deberías estar creando.</p>
+      </div>
+      <div class="glass-card rounded-2xl p-8 reveal reveal-delay-1">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral-50 to-coral-100 border border-coral-200/40 flex items-center justify-center mb-5">
+          <i data-lucide="clock" class="w-5 h-5 text-coral-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2.5 text-navy-900">Los leads se te escapan</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Un lead te escribe a las 11pm. Respondés al otro día y ya compró en otro lado. Conversión manual: 8-15%. Automatizada: 25-40%.</p>
+      </div>
+      <div class="glass-card rounded-2xl p-8 reveal reveal-delay-2">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral-50 to-coral-100 border border-coral-200/40 flex items-center justify-center mb-5">
+          <i data-lucide="users" class="w-5 h-5 text-coral-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2.5 text-navy-900">Contratar closers es caro</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Un setter cuesta $1,500-3,000 USD/mes, hay que entrenarlo, supervisarlo, y puede irse en cualquier momento. No escala.</p>
+      </div>
+      <div class="glass-card rounded-2xl p-8 reveal reveal-delay-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral-50 to-coral-100 border border-coral-200/40 flex items-center justify-center mb-5">
+          <i data-lucide="puzzle" class="w-5 h-5 text-coral-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2.5 text-navy-900">Las herramientas no son para vos</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Los chatbots genéricos suenan a robot. No entienden tu producto, tu tono ni tu audiencia. Tus seguidores lo notan.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ─── 2 · NOTICIAS ──────────────────────────────────────── -->
-<section id="noticias">
-  <div class="container">
-    <span class="section-label">2 · Lo que dice la industria</span>
-    <h2 class="section-title">La IA no es el futuro.<br>Ya está pasando.</h2>
-    <div class="news-grid">
-      <a class="news-card" href="https://massimple.digital/nueve-estadisticas-reveladoras-sobre-la-importancia-del-tiempo-de-respuesta-a-tus-leads/" target="_blank" rel="noopener">
-        <p class="news-card-stat">"Responder dentro de los 5 minutos desde la primera consulta hace 21 veces más probable cerrar ese lead que si tardás 30 minutos."</p>
-        <span class="news-card-source">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          MasSimple Digital · Estadísticas de Tiempo de Respuesta
-        </span>
-      </a>
-      <a class="news-card" href="https://nexoestelar.com/automatizacion-procesos-pymes-argentina-2025/" target="_blank" rel="noopener">
-        <p class="news-card-stat">"Las PyMEs argentinas que automatizan WhatsApp reportan un ahorro del 50–70% en tiempo de atención y reducen costos operativos hasta un 30%."</p>
-        <span class="news-card-source">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Nexo Estelar · Automatización PyMEs Argentina 2025
-        </span>
-      </a>
-      <a class="news-card" href="https://www.lanacion.com.ar/economia/IA/el-81-de-las-empresas-argentinas-ya-adopta-ia-de-alguna-manera-en-su-negocio-nid03072025/" target="_blank" rel="noopener">
-        <p class="news-card-stat">"El 81% de las empresas argentinas ya adopta IA de alguna manera — y el 72% reporta mejoras concretas en eficiencia y ahorro de tiempo."</p>
-        <span class="news-card-source">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          La Nación · Empresas Argentinas e IA
-        </span>
-      </a>
+<!-- ─── SOLUTION ──────────────────────────────────────────── -->
+<section id="solucion" class="py-28 gradient-bg">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">La solución</span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-[1.1]">
+        Tu clon de ventas.<br>
+        <span class="gradient-text">Siempre disponible.</span>
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+      <div class="text-center reveal">
+        <div class="w-16 h-16 rounded-2xl step-gradient flex items-center justify-center mx-auto mb-5 shadow-lg shadow-coral-200/50">
+          <i data-lucide="zap" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Lanzá en días</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Nosotros construimos todo. Vos solo aprobás.</p>
+      </div>
+      <div class="text-center reveal reveal-delay-1">
+        <div class="w-16 h-16 rounded-2xl step-gradient flex items-center justify-center mx-auto mb-5 shadow-lg shadow-coral-200/50">
+          <i data-lucide="handshake" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Con vos o solo</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Funciona autónomo o junto a tu equipo actual.</p>
+      </div>
+      <div class="text-center reveal reveal-delay-2">
+        <div class="w-16 h-16 rounded-2xl step-gradient flex items-center justify-center mx-auto mb-5 shadow-lg shadow-coral-200/50">
+          <i data-lucide="mic" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Tu voz, tu estilo</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">IA entrenada con tu contenido y personalidad.</p>
+      </div>
+      <div class="text-center reveal reveal-delay-3">
+        <div class="w-16 h-16 rounded-2xl step-gradient flex items-center justify-center mx-auto mb-5 shadow-lg shadow-coral-200/50">
+          <i data-lucide="bar-chart-3" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Convierte como humano</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Califica, resuelve objeciones y cierra ventas.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ─── 3 · EL PROBLEMA ───────────────────────────────────── -->
-<section id="problema">
-  <div class="container">
-    <span class="section-label">3 · El problema</span>
-    <h2 class="section-title">Cada turno se pierde<br>entre mensajes de WhatsApp.</h2>
-    <div class="problem-grid">
-      <ul class="problem-list">
-        <li class="problem-item">
-          <div class="problem-icon">📱</div>
-          <div>
-            <h4>Respondés WhatsApp todo el día</h4>
-            <p>Disponibilidad, precio, obras sociales, cancelaciones — interrumpiendo cada cosa que hacés.</p>
+<!-- ─── BENEFITS ──────────────────────────────────────────── -->
+<section class="py-28">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="reveal">
+          <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">Beneficios</span>
+          <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-[1.1] mb-10">
+            Facturá más.<br>Sin quemarte.
+          </h2>
+        </div>
+        <div class="space-y-5">
+          <div class="glass-card rounded-2xl p-6 flex items-center gap-5 reveal">
+            <div class="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-200/50 flex items-center justify-center shrink-0">
+              <i data-lucide="repeat" class="w-6 h-6 text-emerald-600"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-base mb-0.5">Revenue recurrente</h3>
+              <p class="text-sm text-navy-500">Dejá de depender de sponsorships impredecibles</p>
+            </div>
           </div>
-        </li>
-        <li class="problem-item">
-          <div class="problem-icon">❌</div>
-          <div>
-            <h4>Los no-shows te cuestan plata directa</h4>
-            <p>Un turno que no se confirma y no aparece es plata perdida. El recordatorio manual lo terminás olvidando.</p>
+          <div class="glass-card rounded-2xl p-6 flex items-center gap-5 reveal reveal-delay-1">
+            <div class="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-200/50 flex items-center justify-center shrink-0">
+              <i data-lucide="rocket" class="w-6 h-6 text-emerald-600"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-base mb-0.5">Escalá sin equipo</h3>
+              <p class="text-sm text-navy-500">Multiplicá tus ventas sin contratar closers</p>
+            </div>
           </div>
-        </li>
-        <li class="problem-item">
-          <div class="problem-icon">🌙</div>
-          <div>
-            <h4>Después de las 18hs, no respondés</h4>
-            <p>El paciente que escribe a las 9pm se va a la competencia que responde más rápido.</p>
+          <div class="glass-card rounded-2xl p-6 flex items-center gap-5 reveal reveal-delay-2">
+            <div class="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-200/50 flex items-center justify-center shrink-0">
+              <i data-lucide="fingerprint" class="w-6 h-6 text-emerald-600"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-base mb-0.5">Tu voz, siempre</h3>
+              <p class="text-sm text-navy-500">La IA habla como vos, no como un robot genérico</p>
+            </div>
           </div>
-        </li>
-        <li class="problem-item">
-          <div class="problem-icon">📋</div>
-          <div>
-            <h4>La agenda vive en tu cabeza (o en papel)</h4>
-            <p>Sin sistema, dependés de acordarte vos — y cuando te olvidás, se genera el caos.</p>
-          </div>
-        </li>
-      </ul>
-      <div class="phone-mock">
-        <div class="phone-header">
-          <div class="phone-avatar">P</div>
-          <div>
-            <div class="phone-name">Paciente nuevo</div>
-            <div class="phone-status">● en línea</div>
+          <div class="glass-card rounded-2xl p-6 flex items-center gap-5 reveal reveal-delay-3">
+            <div class="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-200/50 flex items-center justify-center shrink-0">
+              <i data-lucide="wrench" class="w-6 h-6 text-emerald-600"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-base mb-0.5">Done-for-you</h3>
+              <p class="text-sm text-navy-500">Nosotros construimos, probamos y optimizamos todo</p>
+            </div>
           </div>
         </div>
-        <div class="chat-messages">
-          <div class="msg msg-in">Hola! tienen turno para el martes?</div>
-          <div class="msg msg-in">o miercoles a la mañana</div>
-          <div class="msg msg-in">cuanto cobran la consulta?</div>
-          <div class="msg msg-in">hacen galeno?</div>
-          <div class="msg msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <!-- Stats card -->
+      <div class="reveal">
+        <div class="glass-card rounded-3xl p-10">
+          <div class="text-center mb-8">
+            <p class="text-sm text-navy-500 mb-3 font-medium">Creadores que usan Palanca reportan</p>
+            <div class="text-6xl md:text-7xl font-black gradient-text leading-none">3.5x</div>
+            <p class="text-base text-navy-500 mt-3 font-medium">más conversiones en DMs</p>
+          </div>
+          <div class="h-px bg-navy-100/60 my-8"></div>
+          <div class="grid grid-cols-2 gap-8 text-center">
+            <div>
+              <div class="text-3xl md:text-4xl font-black text-navy-900">-80%</div>
+              <p class="text-sm text-navy-500 mt-2">Tiempo en mensajes manuales</p>
+            </div>
+            <div>
+              <div class="text-3xl md:text-4xl font-black text-navy-900">+$2K</div>
+              <p class="text-sm text-navy-500 mt-2">Revenue adicional promedio/mes</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── 4 · MÓDULOS ───────────────────────────────────────── -->
-<section id="modulos">
-  <div class="container">
-    <span class="section-label">4 · Nuestras soluciones</span>
-    <h2 class="section-title">En qué nos especializamos.</h2>
-    <p class="section-sub">Sistemas de IA de punta a punta que generan leads, cierran ventas y escalan operaciones — construidos y gestionados por un equipo que lo implementó en decenas de negocios.</p>
-    <div class="features-grid" style="margin-top:48px;">
-      <div class="feature-card">
-        <h3>Atención al cliente IA</h3>
-        <ul class="service-items"><li>WhatsApp 24/7</li><li>Respuestas instantáneas</li><li>Derivación inteligente</li></ul>
-      </div>
-      <div class="feature-card">
-        <h3>Agenda automática</h3>
-        <ul class="service-items"><li>Reserva por WhatsApp</li><li>Sincronización con calendario</li><li>Sin intermediarios</li></ul>
-      </div>
-      <div class="feature-card">
-        <h3>Recordatorios y confirmaciones</h3>
-        <ul class="service-items"><li>WhatsApp automático 48hs antes</li><li>Confirmación con 1 click</li><li>Reducción de no-shows</li></ul>
-      </div>
-      <div class="feature-card">
-        <h3>Reactivación de clientes</h3>
-        <ul class="service-items"><li>Secuencias automáticas</li><li>Segmentación por inactividad</li><li>Recuperación de leads fríos</li></ul>
-      </div>
-      <div class="feature-card">
-        <h3>Generación de leads</h3>
-        <ul class="service-items"><li>Captura por Instagram / Meta</li><li>Speed-to-lead automático</li><li>CRM en Google Sheets</li></ul>
-      </div>
-      <div class="feature-card">
-        <h3>Reportes y visibilidad</h3>
-        <ul class="service-items"><li>Dashboard en tiempo real</li><li>Notificaciones por Gmail</li><li>Métricas de conversión</li></ul>
+<!-- ─── DASHBOARD ─────────────────────────────────────────── -->
+<section id="dashboard" class="py-28 gradient-bg">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">Tu dashboard</span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-[1.1]">
+        Todos tus números.<br>
+        <span class="gradient-text">En tiempo real.</span>
+      </h2>
+      <p class="text-lg text-navy-500 mt-5 max-w-2xl mx-auto">Dashboard personalizado con métricas de rendimiento, ROI y conversiones. Ves exactamente cuánto genera tu agente de IA — en vivo.</p>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="reveal max-w-4xl mx-auto">
+      <div class="glass-card rounded-3xl p-8 md:p-10">
+        <!-- Top metrics row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white rounded-2xl p-5 border border-navy-100/60">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="message-square" class="w-4 h-4 text-coral-500"></i>
+              <span class="text-[11px] text-navy-400 font-semibold uppercase tracking-wider">Conversaciones</span>
+            </div>
+            <div class="text-2xl md:text-3xl font-black text-navy-900">847</div>
+            <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +23% este mes
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-navy-100/60">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="user-check" class="w-4 h-4 text-blue-500"></i>
+              <span class="text-[11px] text-navy-400 font-semibold uppercase tracking-wider">Leads calificados</span>
+            </div>
+            <div class="text-2xl md:text-3xl font-black text-navy-900">312</div>
+            <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +18% este mes
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-navy-100/60">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="calendar-check" class="w-4 h-4 text-violet-500"></i>
+              <span class="text-[11px] text-navy-400 font-semibold uppercase tracking-wider">Calls agendadas</span>
+            </div>
+            <div class="text-2xl md:text-3xl font-black text-navy-900">89</div>
+            <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +31% este mes
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-navy-100/60">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-500"></i>
+              <span class="text-[11px] text-navy-400 font-semibold uppercase tracking-wider">Revenue generado</span>
+            </div>
+            <div class="text-2xl md:text-3xl font-black gradient-text">$4,250</div>
+            <div class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +42% este mes
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart area -->
+        <div class="bg-white rounded-2xl p-6 border border-navy-100/60">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="font-bold text-sm text-navy-900">Conversiones por semana</h3>
+              <p class="text-xs text-navy-400 mt-0.5">Últimos 30 días</p>
+            </div>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/50">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full pulse-dot"></span>
+              <span class="text-xs font-semibold text-emerald-700">En vivo</span>
+            </div>
+          </div>
+          <!-- Simplified bar chart -->
+          <div class="flex items-end gap-2 h-32">
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 45%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 55%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 40%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 65%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 50%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 72%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 60%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 80%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 68%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 85%"></div>
+            <div class="flex-1 rounded-t-lg bg-navy-100 hover:bg-coral-200 transition-colors cursor-default" style="height: 78%"></div>
+            <div class="flex-1 rounded-t-lg step-gradient hover:opacity-80 transition-opacity cursor-default" style="height: 95%"></div>
+          </div>
+          <div class="flex justify-between mt-3 text-[10px] text-navy-400 font-medium">
+            <span>Sem 1</span><span>Sem 2</span><span>Sem 3</span><span>Hoy</span>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="grid grid-cols-3 gap-4 mt-6">
+          <div class="bg-white rounded-xl p-4 border border-navy-100/60 text-center">
+            <div class="text-xs text-navy-400 font-semibold mb-1">Tasa de conversión</div>
+            <div class="text-xl font-black text-navy-900">36.8%</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-navy-100/60 text-center">
+            <div class="text-xs text-navy-400 font-semibold mb-1">Tiempo promedio de respuesta</div>
+            <div class="text-xl font-black text-navy-900">&lt;8 seg</div>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-navy-100/60 text-center">
+            <div class="text-xs text-navy-400 font-semibold mb-1">ROI del sistema</div>
+            <div class="text-xl font-black gradient-text">412%</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── 5 · CÓMO FUNCIONA ────────────────────────────────── -->
-<section id="como-funciona">
-  <div class="container">
-    <span class="section-label">5 · Proceso</span>
-    <h2 class="section-title">De la primera llamada<br>al lanzamiento.</h2>
-    <p class="section-sub">Sin código, sin sorpresas. Sabés exactamente qué vas a recibir antes de arrancar.</p>
-    <div class="steps" style="grid-template-columns: repeat(4,1fr);">
-      <div class="step">
-        <div class="step-number">1</div>
-        <h3>Auditoría del embudo</h3>
-        <p>Sesión gratuita de 30 min donde auditamos tu flujo, identificamos cuellos de botella y mapeamos dónde la IA mueve el resultado.</p>
+<!-- ─── HOW IT WORKS ─────────────────────────────────────── -->
+<section id="proceso" class="py-28">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">Proceso</span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-[1.1]">
+        Cómo funciona Palanca
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-10 max-w-4xl mx-auto relative">
+      <div class="hidden md:block absolute top-10 left-[18%] right-[18%] h-0.5 bg-gradient-to-r from-coral-300 via-coral-200 to-blue-300 z-0"></div>
+
+      <div class="text-center relative z-10 reveal">
+        <div class="w-20 h-20 rounded-full step-gradient flex items-center justify-center mx-auto mb-6 shadow-xl shadow-coral-200/40">
+          <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Entrenamos</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Palanca aprende de tu contenido, tono y audiencia — y co-construimos un flujo de ventas IA a tu medida.</p>
       </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <h3>Propuesta concreta</h3>
-        <p>Entregamos alcance, cronograma y precio fijo. Sin sorpresas, sin cobro por hora. Sabés exactamente qué vas a recibir.</p>
+      <div class="text-center relative z-10 reveal reveal-delay-1">
+        <div class="w-20 h-20 rounded-full step-gradient flex items-center justify-center mx-auto mb-6 shadow-xl shadow-coral-200/40">
+          <i data-lucide="send" class="w-8 h-8 text-white"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Desplegamos</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Lo conectamos a tus redes sociales, landing page o plataforma de mensajería. Listo para recibir leads.</p>
       </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <h3>Construcción y lanzamiento</h3>
-        <p>Construimos, probamos y desplegamos tu sistema. Recibís actualizaciones semanales y un producto funcionando — no un deck lleno de promesas.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">4</div>
-        <h3>Gestión continua</h3>
-        <p>Retainer opcional para monitoreo, optimización e iteración. La mayoría de los clientes ve retornos crecientes con el tiempo.</p>
+      <div class="text-center relative z-10 reveal reveal-delay-2">
+        <div class="w-20 h-20 rounded-full step-gradient flex items-center justify-center mx-auto mb-6 shadow-xl shadow-coral-200/40">
+          <i data-lucide="badge-check" class="w-8 h-8 text-white"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Convertimos</h3>
+        <p class="text-sm text-navy-500 leading-relaxed">Palanca chatea con tus leads, los califica, resuelve objeciones y cierra o agenda llamadas — automáticamente.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── FAQ ──────────────────────────────────────────────── -->
-<section id="faq">
-  <div class="container">
-    <span class="section-label">Preguntas frecuentes</span>
-    <h2 class="section-title" style="max-width:560px;">Lo que nos preguntan antes de arrancar.</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <div class="faq-question">¿Tengo que cambiar mi número de WhatsApp? <span class="faq-toggle">+</span></div>
-        <div class="faq-answer">No. Usamos tu número actual a través de WhatsApp Business. El sistema se conecta a tu cuenta existente, no necesitás un número nuevo.</div>
+<!-- ─── FAQ ───────────────────────────────────────────────── -->
+<section id="faq" class="py-28 gradient-bg">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-14 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-[3px] text-coral-500 mb-4 block">FAQ</span>
+      <h2 class="text-3xl md:text-4xl font-black tracking-tight">Lo que nos preguntan antes de arrancar.</h2>
+    </div>
+    <div class="reveal">
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿Necesito saber de tecnología?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">No. Palanca es un servicio done-for-you: nosotros construimos, configuramos y mantenemos todo. Vos solo aprobás el tono y los mensajes.</p>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Qué pasa si el paciente hace una pregunta que el sistema no sabe responder? <span class="faq-toggle">+</span></div>
-        <div class="faq-answer">El sistema deriva la conversación a vos con una notificación. Siempre podés tomar el control cuando necesitás. El bot maneja el 80-90% de las consultas rutinarias solo.</div>
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿La IA suena a robot o habla como yo?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">Habla como vos. Entrenamos la IA con tu contenido, tus respuestas anteriores y tu personalidad. Tus seguidores no notan la diferencia — y si algo la IA no sabe responder, te deriva automáticamente.</p>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Funciona con obras sociales y prepagas? <span class="faq-toggle">+</span></div>
-        <div class="faq-answer">Sí. Configuramos el sistema con la información de las obras sociales que aceptás. El bot puede responder qué obras sociales cubrís y qué cobertura aplica a cada prestación.</div>
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿En qué plataformas funciona?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">Se integra con tus redes sociales (Instagram, TikTok DMs), plataformas de mensajería, tu landing page o link-in-bio. Todo conectado a tu calendario y sistema de cobro. Nos adaptamos a donde estén tus leads.</p>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Cuánto tarda la implementación? <span class="faq-toggle">+</span></div>
-        <div class="faq-answer">Depende de la complejidad del sistema. En la llamada de discovery definimos juntos los tiempos. La primera etapa es construir el sistema, la segunda son pruebas y ajustes con vos antes de salir en producción.</div>
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿Voy a poder ver las métricas y el ROI?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">Sí. Tenés un dashboard en tiempo real con todas las métricas: conversaciones, leads calificados, calls agendadas, ventas cerradas y revenue generado. Ves el rendimiento de tu agente de IA en vivo, con datos claros para tomar decisiones.</p>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Qué pasa si quiero cancelar? <span class="faq-toggle">+</span></div>
-        <div class="faq-answer">El retainer es mensual, sin permanencia mínima. Si en cualquier momento querés cancelar, avisás y listo. El sistema que construimos queda tuyo.</div>
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿Qué pasa si quiero cancelar?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">Sin permanencia mínima. Avisás y listo. El sistema que construimos queda tuyo. Nuestro trabajo es que no quieras cancelar porque los resultados hablan solos.</p>
+        </div>
       </div>
+
+      <div class="faq-item border-b border-navy-200/40">
+        <button class="faq-question w-full flex justify-between items-center py-6 text-left font-bold text-base text-navy-800 hover:text-coral-600 transition-colors cursor-pointer" onclick="toggleFaq(this)">
+          ¿Cuánto cuesta Palanca?
+          <span class="faq-toggle w-8 h-8 rounded-full glass-card flex items-center justify-center text-sm text-navy-500 shrink-0 transition-all ml-4">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </button>
+        <div class="faq-answer text-sm text-navy-500 leading-relaxed">
+          <p class="pb-6">Depende de la complejidad de tu negocio. Arrancamos con una llamada gratuita y te presentamos una propuesta con precio fijo. Sin sorpresas, sin cobro por hora. La mayoría de los creadores recuperan la inversión el primer mes.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <!-- ─── CTA FINAL ────────────────────────────────────────── -->
-<section id="cta-final">
-  <div class="container">
-    <div class="cta-box">
-      <div class="cta-glow"></div>
-      <h2>¿Listo para escalar con IA?</h2>
-      <p>Agendá una llamada gratuita de 30 minutos. Auditamos tu embudo,<br>encontramos los cuellos de botella y te mostramos exactamente dónde la IA mueve el resultado.</p>
-      <div class="cta-actions">
-        <a href="https://tally.so/r/9q15Kp" target="_blank" class="btn btn-primary btn-arrow" style="font-size:16px; padding: 16px 36px;">
-          Agendar llamada de crecimiento gratis
-        </a>
-      </div>
-      <p class="cta-note">Sin compromiso · Sin contrato · Resultados en semanas</p>
+<section class="py-28 bg-navy-950 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-30" style="background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(249,115,22,0.15) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 30% 70%, rgba(59,130,246,0.1) 0%, transparent 70%);"></div>
+  <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+    <div class="reveal">
+      <h2 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.05] mb-7">
+        Vos creás.<br>
+        <span class="gradient-text">Palanca cierra.</span>
+      </h2>
+      <p class="text-lg text-navy-400 mb-12 max-w-xl mx-auto leading-relaxed">Lanzá tu equipo de ventas IA — entrenado con tu voz, hecho para tu audiencia. En días, no meses.</p>
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="gradient-btn inline-block text-white font-bold px-10 py-4.5 rounded-full text-lg transition-all cursor-pointer shadow-2xl shadow-coral-500/20">
+        Agendar llamada gratuita →
+      </a>
+      <p class="text-sm text-navy-500 mt-6">Sin compromiso · Sin contrato · Resultados en semanas</p>
     </div>
   </div>
 </section>
 
 <!-- ─── FOOTER ───────────────────────────────────────────── -->
-<footer>
-  <div class="container footer-inner">
+<footer class="border-t border-navy-100/60 py-10 bg-white">
+  <div class="max-w-6xl mx-auto px-6 flex flex-wrap justify-between items-center gap-4">
     <div>
-      <div class="logo" style="margin-bottom: 4px;">palanca<span>.</span></div>
-      <div class="footer-copy">© 2026 Palanca · Buenos Aires, Argentina</div>
+      <div class="text-lg font-black tracking-tight">palanca<span class="text-coral-500">.</span></div>
+      <div class="text-xs text-navy-400 mt-1">© 2026 Palanca · Buenos Aires, Argentina</div>
     </div>
-    <div class="footer-links">
-      <a href="mailto:consultas.palanca@gmail.com">consultas.palanca@gmail.com</a>
-      <a href="https://tally.so/r/9q15Kp" target="_blank">Agendar una demo</a>
+    <div class="flex gap-6">
+      <a href="mailto:consultas.palanca@gmail.com" class="text-sm text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">consultas.palanca@gmail.com</a>
+      <a href="https://tally.so/r/9q15Kp" target="_blank" class="text-sm text-navy-400 hover:text-navy-900 transition-colors cursor-pointer">Agendar demo</a>
     </div>
   </div>
 </footer>
 
-<!-- ─── JS ───────────────────────────────────────────────── -->
+<!-- ─── SCRIPTS ──────────────────────────────────────────── -->
 <script>
-  // FAQ accordion
-  document.querySelectorAll('.faq-question').forEach(q => {
-    q.addEventListener('click', () => {
-      const item = q.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    });
-  });
+  // Initialize Lucide icons
+  lucide.createIcons();
 
-  // Smooth active nav link
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const answer = item.querySelector('.faq-answer');
+    const icon = btn.querySelector('i');
+    const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+    document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = '0px');
+    document.querySelectorAll('.faq-toggle i').forEach(i => { i.setAttribute('data-lucide', 'plus'); });
+    lucide.createIcons();
+
+    if (!isOpen) {
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+      icon.setAttribute('data-lucide', 'minus');
+      lucide.createIcons();
+    }
+  }
+
+  // Scroll reveal with IntersectionObserver
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Active nav link
   window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
     let current = '';
     sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+      if (window.scrollY >= s.offsetTop - 150) current = s.id;
     });
     navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+      const isActive = a.getAttribute('href') === '#' + current;
+      a.classList.toggle('text-navy-900', isActive);
+      a.classList.toggle('text-navy-400', !isActive);
     });
-  });
+  }, { passive: true });
 </script>
+
 </body>
 </html>
